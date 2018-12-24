@@ -15,7 +15,7 @@ string generate_digits() {
     random_device r;
     seed_seq seed{r(), r(), r(), r(), r(), r(), r(), r()};
     mt19937 eng(seed);
-    //Dupe NUMBERS
+    //Dupe NUMBERS (could probably just use NUMBERS directly, but this is more future proof in case we need to reuse it.
     string answer = NUMBERS;
     //shuffle and grab the first 4
     shuffle(answer.begin(), answer.end(), eng);
@@ -40,14 +40,12 @@ string player_guess() {
 }
 
 tuple<int, int> calculate_score(string answer, string guess){
-    int bulls = 0;
-    int cows = 0;
+    int bulls = 0, cows = 0;
     for (int i = 0; i != NUM_LEN; i++){
-        int pos = answer.find(guess[i]);
-        if (pos == i){
+        if (answer.find(guess[i]) == i){
             ++bulls;
         }
-        else if (pos != string::npos){
+        else if (answer.find(guess[i]) != string::npos){
             ++cows;
         }
     }
