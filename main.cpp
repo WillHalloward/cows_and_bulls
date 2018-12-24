@@ -11,26 +11,33 @@ const int NUM_LEN = 4;
 const string NUMBERS = "1234567890";
 
 string generate_digits() {
+    //**** Seed generation - AKA LITERAL BLACK MAGIC
     random_device r;
     seed_seq seed{r(), r(), r(), r(), r(), r(), r(), r()};
     mt19937 eng(seed);
+    //Dupe NUMBERS
     string answer = NUMBERS;
+    //shuffle and grab the first 4
     shuffle(answer.begin(), answer.end(), eng);
     answer = answer.substr(0, NUM_LEN);
+
     cout << "secret number generated\n";
     return answer;
 }
 
 string player_guess() {
     string guess;
-    while(cout << "Your guess?\n", getline(cin, guess)) {
+    //loop until we get a valid answer.
+    while(true) {
+        cout << "Whats your guess?\n";
+        getline(cin, guess);
+        //Check if the input is as long as NUM_LEN and does not contain a letter.
         if (guess.length() != NUM_LEN || guess.find_first_not_of(NUMBERS) != string::npos){
             cout << "invalid input\n";
             continue;
         }
         return guess;
     }
-    return "something is fucked"; //this should never happen
 }
 
 tuple<int, int> calculate_score(string answer, string guess){
