@@ -5,6 +5,8 @@
 #include <iterator>
 #include <random>
 #include <fstream>
+#include <sstream>
+#include <cmath>
 
 using namespace std;
 const int NUM_LEN = 4;
@@ -21,7 +23,6 @@ string generate_digits() {
     //shuffle and grab the first 4
     shuffle(answer.begin(), answer.end(), eng);
     answer = answer.substr(0, NUM_LEN);
-
     cout << "secret number generated\n";
     return answer;
 }
@@ -40,7 +41,7 @@ string player_guess() {
     }
 }
 
-tuple<int, int> calculate_score(string answer, string guess){
+tuple<int, int> calculate_score(const string &answer, string guess){
     int bulls = 0, cows = 0;
     for (int i = 0; i != NUM_LEN; i++){
         if (answer.find(guess[i]) == i){
@@ -53,14 +54,31 @@ tuple<int, int> calculate_score(string answer, string guess){
     return make_tuple(cows, bulls);
 }
 
-void high_score(int turns, string number){
+void high_score(int turns, const string &number){
     ofstream output;
     output.open("High_score.txt", ios_base::app);
     output << "Turns: " << turns << "\nNumber: " << number << "\n============\n";
     output.close();
-    return;
 }
 
+bool check_dupe(string str)
+{
+    sort(str.begin(), str.end());
+    return adjacent_find(str.begin(), str.end()) != str.end();
+}
+
+vector <string> generate_list(){
+    vector<string> number_vector;
+    for (int x = pow(10, NUM_LEN-1); x < pow(10, NUM_LEN); x++)
+    {
+        int temp;
+        temp = x;
+        if(!check_dupe(to_string(temp))) {
+            number_vector.push_back(to_string(temp));
+        }
+    }
+    return number_vector;
+}
 
 int main() {
     int cows = 0, bulls = 0, turn = 0;
@@ -72,11 +90,10 @@ int main() {
         tuple<int, int> de_tuple = calculate_score(answer, guess);
         cows = get<0>(de_tuple);
         bulls = get<1>(de_tuple);
-        cout << "Turn: " << turn << "\nCows:  " << cows << "\nBulls: " << bulls << endl;
+        cout << "Turn:  " << turn << "\nCows:  " << cows << "\nBulls: " << bulls << endl;
     }
-    if (bulls == NUM_LEN) {
-        cout << "You win!\n";
-    }
+    cout << "You win!\n";
     high_score(turn, answer);
+    generate_list();
     return 0;
 }
