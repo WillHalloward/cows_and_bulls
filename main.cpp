@@ -9,21 +9,18 @@
 #include <chrono>
 
 const int NUM_LEN = 4;
-
 const std::string NUMBERS = "1234567890";
-
-long long int seed = std::chrono::system_clock::now().time_since_epoch().count();
 
 //shuffle NUMBERS and grab the first 4
 std::string generate_digits() {
     std::string answer = NUMBERS;
-    shuffle(answer.begin(), answer.end(), std::default_random_engine(seed));
+    shuffle(answer.begin(), answer.end(), std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count()));
     answer = answer.substr(0, NUM_LEN);
     std::cout << "secret number generated\n";
     return answer;
 }
-bool check_dupe(std::string str)
-{
+
+bool check_dupe(std::string str) {
     sort(str.begin(), str.end());
     return adjacent_find(str.begin(), str.end()) != str.end();
 }
@@ -86,7 +83,7 @@ std::vector <std::string> generate_list(){
 }
 
 void filter(const std::string &guess, std::pair<int, int> cb, std::vector<std::string> &list){
-    std::vector<std::string>::iterator it = list.begin();
+    auto it = list.begin();
     std::pair<int, int> filter_cb;
     while(it != list.end()){
         calculate_score(*it, guess, filter_cb);
@@ -106,7 +103,7 @@ int main() {
     std::string answer = generate_digits();
     std::vector<std::string> list = generate_list();
     std::cout << answer << " - The secret answer.\n"; //cheat to make it easier to test.
-    while (cows_bulls.second < NUM_LEN && !list.empty()) {
+    while (!list.empty()) {
         turn++;
         //std::string guess = player_guess();
         std::string guess = generate_guess(list);
@@ -116,6 +113,7 @@ int main() {
         }
         std::cout << "Turn:  " << turn << "\nCows:  " << cows_bulls.first << "\nBulls: " << cows_bulls.second << std::endl;
         filter(guess, cows_bulls, list);
+        std::cout << "========================================\n";
     }
     if (cows_bulls.second == NUM_LEN) {
         std::cout << "You win! the secret number was: " << answer << "\nIt took: " << turn << " turns\n";
