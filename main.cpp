@@ -18,7 +18,7 @@ string generate_digits() {
     string answer = NUMBERS;
     shuffle(answer.begin(), answer.end(), default_random_engine(chrono::system_clock::now().time_since_epoch().count()));
     answer = answer.substr(0, NUM_LEN);
-    cout << "secret number generated\n";
+    printf("Secret number generated\n");
     return answer;
 }
 
@@ -32,19 +32,19 @@ string player_guess() {
     string guess;
     //loop until we get a valid answer.
     while(true) {
-        cout << "Whats your guess?\n";
+        printf("Whats your guess?\n");
         getline(cin, guess);
         if (guess.length() != NUM_LEN ||
             guess.find_first_not_of(NUMBERS) != string::npos ||
             check_dupe(guess)){
-            cout << "invalid input\n";
+            printf("Invalid input, you need %i unique digits with no space\n", NUM_LEN);
             continue;
         }
         return guess;
     }
 }
 
-bool calculate_score(const string &answer, string guess, pair<int, int> &cb){
+void calculate_score(const string &answer, string guess, pair<int, int> &cb){
     cb.first = 0, cb.second = 0;
     for (int i = 0; i != NUM_LEN; i++){
         if (answer.find(guess[i]) == i){
@@ -54,7 +54,6 @@ bool calculate_score(const string &answer, string guess, pair<int, int> &cb){
             cb.first++;
         }
     }
-    return cb.second == NUM_LEN;
 }
 
 string generate_guess(vector<string> &list){
@@ -80,7 +79,7 @@ vector <string> generate_list(){
             number_vector.push_back(temp);
         }
     }
-    cout << number_vector.size() << " - Number of possible guesses.\n";
+    printf("%i - Number of possible guesses\n", number_vector.size());
     return number_vector;
 }
 
@@ -96,7 +95,7 @@ void filter(const string &guess, pair<int, int> cb, vector<string> &list){
             it++;
         }
     }
-    cout << list.size() << " - Number of possible guesses remaining\n";
+    printf("%i - Number of possible guesses remaining\n", list.size());
 }
 
 int main() {
@@ -104,28 +103,30 @@ int main() {
     int turn = 0;
     string answer = generate_digits();
     vector<string> list = generate_list();
-    cout << answer << " - The secret answer.\n"; //cheat to make it easier to test.
+    printf("%s - The secret answer.\n", answer.c_str());
+
     while (!list.empty()) {
         turn++;
         //string guess = player_guess();
         string guess = generate_guess(list);
-        cout << guess << " - Guess\n";
-        if (calculate_score(answer, guess, cows_bulls)) {
+        printf("%s - Guess\n", guess.c_str());
+        calculate_score(answer, guess, cows_bulls);
+        if(cows_bulls.second == NUM_LEN) {
             break;
         }
-        cout << "Turn:  " << turn << "\nCows:  " << cows_bulls.first << "\nBulls: " << cows_bulls.second << endl;
+        printf("Turns: %i\nCows:  %i\nBulls: %i\n", turn, cows_bulls.first, cows_bulls.second);
         filter(guess, cows_bulls, list);
-        cout << "========================================\n";
+        printf("========================================\n");
     }
     if (cows_bulls.second == NUM_LEN) {
-        cout << "You win! the secret number was: " << answer << "\nIt took: " << turn << " turns\n";
+        printf("You win! The secret number was: %s\n It took: %i turns\n", answer.c_str(), turn);
         high_score(turn, answer);
     }
     else if (list.empty()){
-        cout << "ye filthy cheat\n";
+        printf("Ye filthy cheat\n");
     }
     else{
-        cout << "something went horribly wrong\n";
+        printf("something went horribly wrong\n");
     }
     return 0;
 }
