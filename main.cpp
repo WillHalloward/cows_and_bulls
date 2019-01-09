@@ -21,9 +21,20 @@ int main() {
         cpu_player();
     }
     else if (mode == 3){
-        printf("how many times?");
         int loops;
-        cin >> loops;
+        while(true) {
+            printf("how many times?\n");
+            cin >> loops;
+            if (cin.fail() || loops <= 0)
+            {
+                printf("Please type in a number larger than 0.\n");
+                cin.clear();
+                cin.ignore();
+            }
+            if (loops > 0){
+                break;
+            }
+        }
         for (int i = 0; loops > i; i++){
             cpu_cpu();
         }
