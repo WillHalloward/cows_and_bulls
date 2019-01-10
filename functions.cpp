@@ -63,6 +63,9 @@ void high_score(int turns, const string &number, string mode){
 }
 
 //generates a list with all NUM_LEN length digit combinations that don't repeat any digits.
+/*TODO make it so that the list builds the list instead of filters it. would fix performance when using 8+ NUM_LEN
+ * see scratch file for example */
+
 vector <string> generate_list(){
     vector<string> number_vector;
     for (int x = pow(10, NUM_LEN-2); x < pow(10, NUM_LEN)-1; x++)
