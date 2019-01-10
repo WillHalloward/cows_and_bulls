@@ -11,7 +11,7 @@ string generate_digits() {
     printf("Secret number generated\n");
     return answer;
 }
-//Checks for dupes digits/letters in a string by sorting them and thenchecking if theres a identical digit next to each other.
+//Checks for dupes digits/letters in a string by sorting them and then checking if there's a identical digit next to each other.
 bool check_dupe(string str) {
     sort(str.begin(), str.end());
     return adjacent_find(str.begin(), str.end()) == str.end();
@@ -24,7 +24,6 @@ string player_guess() {
     while(true) {
         cout << "Whats your guess?\n";
         cin >> guess;
-
         if (guess.length() == NUM_LEN &&
             guess.find_first_not_of(NUMBERS) == string::npos &&
             check_dupe(guess)){
@@ -38,7 +37,7 @@ string player_guess() {
 void calculate_score(const string &answer, string guess, pair<int, int> &cb){
     cb.first = 0, cb.second = 0;
     for (int i = 0; i != NUM_LEN; i++){
-        //checks if the number at position i exsists in answer at the same position. otherwise it checks if it's in the answer att all.
+        //checks if the number at position i exists in answer at the same position. otherwise it checks if it's in the answer at all.
         if (answer.find(guess[i]) == i){
             cb.second++;
         }
@@ -87,7 +86,9 @@ void filter(const string &guess, pair<int, int> cows_bulls, vector<string> &list
     pair<int, int> filter_cb;
     while(it != list.end()){
         calculate_score(*it, guess, filter_cb);
-        if (filter_cb.first != cows_bulls.first || filter_cb.second != cows_bulls.second || *it == guess){
+        if (filter_cb.first != cows_bulls.first ||
+            filter_cb.second != cows_bulls.second ||
+            *it == guess){
             list.erase(it);
         }
         else{
