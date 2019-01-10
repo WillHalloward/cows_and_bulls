@@ -11,7 +11,8 @@ string generate_digits(){
     answer = answer.substr(0, NUM_LEN);
     return answer;
 }
-//Checks for dupes digits/letters in a string by sorting them and then checking if there's a identical digit next to each other.
+//Checks for dupes digits/letters in a string by sorting them
+//and then checking if there's a identical digit next to each other.
 bool check_dupe(string str){
     sort(str.begin(), str.end());
     return adjacent_find(str.begin(), str.end()) == str.end();
@@ -22,23 +23,23 @@ string player_guess() {
     string guess;
     //loop until we get a valid answer.
     while(true){
-        cout << "Whats your guess?\n";
+        printf("Whats your guess?\n");
         cin >> guess;
         if (guess.length() == NUM_LEN &&
             guess.find_first_not_of(NUMBERS) == string::npos &&
             check_dupe(guess)){
             return guess;
         }
-        cout << "invalid input\n";
+        printf("Invalid input\n");
     }
 }
 
 //calculates the score based on similarty by looping trough
 void calculate_score(const string &answer, string guess, pair<int, int> &cb){
-    cb.first = 0, cb.second = 0;
+    cb.first = cb.second = 0;
     for (int i = 0; i != NUM_LEN; i++){
         //checks if the number at position i exists in answer at the same position.
-        // otherwise it checks if it's in the answer at all.
+        //otherwise it checks if it's in the answer at all.
         if (answer.find(guess[i]) == i){
             cb.second++;
         }
@@ -89,8 +90,7 @@ void filter(const string &guess, pair<int, int> cows_bulls, vector<string> &list
     pair<int, int> filter_cows_bulls;
     while(it != list.end()){
         calculate_score(*it, guess, filter_cows_bulls);
-        if (filter_cows_bulls.first != cows_bulls.first ||
-            filter_cows_bulls.second != cows_bulls.second ||
+        if (filter_cows_bulls != cows_bulls ||
             *it == guess){
             list.erase(it);
         }
@@ -155,22 +155,38 @@ void cpu_player(){
 
 //the cpu plays vs it self.
 void cpu_cpu(){
-    pair <int, int> cows_bulls;
-    int turn = 0;
-    string answer = generate_digits();
-    printf("========================================\n");
-    vector<string> list = generate_list();
-    while (true) {
-        turn++;
-        string guess = cpu_guess(list);
-        printf("%s - Guess\n", guess.c_str());
-        calculate_score(answer, guess, cows_bulls);
-        if (cows_bulls.second == NUM_LEN){
-            break;
-        }
-        printf("Turns: %i\nCows:  %i\nBulls: %i\n\n", turn, cows_bulls.first, cows_bulls.second);
-        filter(guess, cows_bulls, list);
+    int loops;
+    double total;
+    printf("How many times?\n");
+    while(!(cin >> loops) || loops <= 0) {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Error, please try again.\n";
     }
-    printf("solved in %i turns\nThe secret was %s\n", turn, answer.c_str());
-    high_score(turn, answer, "CPU vs CPU");
+    for (int i = 0; loops > i; i++){
+        pair <int, int> cows_bulls;
+
+        int turn = 0;
+        string answer = generate_digits();
+        printf("========================================\n");
+        vector<string> list = generate_list();
+        while (true){
+            turn++;
+            string guess = cpu_guess(list);
+            printf("%s - Guess\n", guess.c_str());
+            calculate_score(answer, guess, cows_bulls);
+            if (cows_bulls.second == NUM_LEN){
+                break;
+            }
+            printf("Turns: %i\nCows:  %i\nBulls: %i\n\n", turn, cows_bulls.first, cows_bulls.second);
+            filter(guess, cows_bulls, list);
+        }
+        total = total + turn;
+        printf("solved in %i turns\nThe secret was %s\n", turn, answer.c_str());
+        high_score(turn, answer, "CPU vs CPU");
+    }
+    ofstream output;
+    output.open("High_score.txt", ios_base::app);
+    output << "Avg turns: " << total/loops << "\n" << loops << " loops" <<  "\n============\n";
+    output.close();
 }
