@@ -29,4 +29,4 @@ void player_cpu();
 void cpu_player();
 void cpu_cpu();
 
-#endif //UNTITLED_FUNCTIONS_H
+#endif //HEADER_H

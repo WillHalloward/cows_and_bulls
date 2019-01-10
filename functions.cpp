@@ -4,15 +4,15 @@ const int NUM_LEN = 4;
 const string NUMBERS = "1234567890";
 
 //shuffle NUMBERS and grab the first 4
-string generate_digits() {
+string generate_digits(){
     string answer = NUMBERS;
-    shuffle(answer.begin(), answer.end(), default_random_engine(chrono::system_clock::now().time_since_epoch().count()));
+    shuffle(answer.begin(), answer.end(), default_random_engine(
+            static_cast<unsigned int>(chrono::system_clock::now().time_since_epoch().count())));
     answer = answer.substr(0, NUM_LEN);
-    printf("Secret number generated\n");
     return answer;
 }
 //Checks for dupes digits/letters in a string by sorting them and then checking if there's a identical digit next to each other.
-bool check_dupe(string str) {
+bool check_dupe(string str){
     sort(str.begin(), str.end());
     return adjacent_find(str.begin(), str.end()) == str.end();
 }
@@ -21,7 +21,7 @@ bool check_dupe(string str) {
 string player_guess() {
     string guess;
     //loop until we get a valid answer.
-    while(true) {
+    while(true){
         cout << "Whats your guess?\n";
         cin >> guess;
         if (guess.length() == NUM_LEN &&
@@ -37,7 +37,8 @@ string player_guess() {
 void calculate_score(const string &answer, string guess, pair<int, int> &cb){
     cb.first = 0, cb.second = 0;
     for (int i = 0; i != NUM_LEN; i++){
-        //checks if the number at position i exists in answer at the same position. otherwise it checks if it's in the answer at all.
+        //checks if the number at position i exists in answer at the same position.
+        // otherwise it checks if it's in the answer at all.
         if (answer.find(guess[i]) == i){
             cb.second++;
         }
@@ -65,10 +66,9 @@ void high_score(int turns, const string &number, string mode){
 //generates a list with all NUM_LEN length digit combinations that don't repeat any digits.
 /*TODO make it so that the list builds the list instead of filters it. would fix performance when using 8+ NUM_LEN
  * see scratch file for example */
-
 vector <string> generate_list(){
     vector<string> number_vector;
-    for (int x = pow(10, NUM_LEN-2); x < pow(10, NUM_LEN)-1; x++)
+    for (int x = static_cast<int>(pow(10, NUM_LEN - 2)); x < pow(10, NUM_LEN) - 1; x++)
     {
         //to make sure we include numbers that start with 0
         unsigned long long number_of_zeros = NUM_LEN - to_string(x).length();
@@ -77,7 +77,7 @@ vector <string> generate_list(){
             number_vector.push_back(temp);
         }
     }
-    printf("%i - Number of possible guesses\n", number_vector.size());
+    printf("%llu - Number of possible guesses\n", number_vector.size());
     return number_vector;
 }
 
@@ -86,11 +86,11 @@ vector <string> generate_list(){
 //then doing a bulls and cow check vs the rest of the list.
 void filter(const string &guess, pair<int, int> cows_bulls, vector<string> &list){
     auto it = list.begin();
-    pair<int, int> filter_cb;
+    pair<int, int> filter_cows_bulls;
     while(it != list.end()){
-        calculate_score(*it, guess, filter_cb);
-        if (filter_cb.first != cows_bulls.first ||
-            filter_cb.second != cows_bulls.second ||
+        calculate_score(*it, guess, filter_cows_bulls);
+        if (filter_cows_bulls.first != cows_bulls.first ||
+            filter_cows_bulls.second != cows_bulls.second ||
             *it == guess){
             list.erase(it);
         }
@@ -98,7 +98,7 @@ void filter(const string &guess, pair<int, int> cows_bulls, vector<string> &list
             it++;
         }
     }
-    printf("%i - Number of possible guesses remaining\n", list.size());
+    printf("%llu - Number of possible guesses remaining\n", list.size());
 }
 
 //player is the code breaker
@@ -127,29 +127,17 @@ void cpu_player(){
     while(true){
         turn++;
         guess = cpu_guess(list);
-        cows_bulls.second = cows_bulls.first = -1;
-        printf("My guess is %s\nHow many cows and bulls did i get?\n", guess.c_str());
-        while (cows_bulls.first < 0 || cows_bulls.first > NUM_LEN){
-            printf("Cows: ");
-            cin >> cows_bulls.first;
-            if (cin.fail())
-            {
+        printf("My guess is %s\nHow many cows and bulls did i get?\nCows: ", guess.c_str());
+        while (!(cin >> cows_bulls.first) || cows_bulls.first < 0 || cows_bulls.first > NUM_LEN){
                 printf("Please type in a number between 0 and %i\n", NUM_LEN);
                 cin.clear();
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                cows_bulls.first = -1;
-            }
         }
-        while (cows_bulls.second < 0 || cows_bulls.second > NUM_LEN){
-            printf("Bulls: ");
-            cin >> cows_bulls.second;
-            if (cin.fail())
-            {
+        printf("Bulls: ");
+        while (!(cin >> cows_bulls.second) || cows_bulls.second < 0 || cows_bulls.second > NUM_LEN){
                 printf("Please type in a number between 0 and %i\n", NUM_LEN);
                 cin.clear();
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                cows_bulls.second = -1;
-            }
         }
         if (cows_bulls.second == NUM_LEN){
             break;
@@ -170,6 +158,7 @@ void cpu_cpu(){
     pair <int, int> cows_bulls;
     int turn = 0;
     string answer = generate_digits();
+    printf("========================================\n");
     vector<string> list = generate_list();
     while (true) {
         turn++;
@@ -179,7 +168,7 @@ void cpu_cpu(){
         if (cows_bulls.second == NUM_LEN){
             break;
         }
-        printf("Turns: %i\nCows:  %i\nBulls: %i\n", turn, cows_bulls.first, cows_bulls.second);
+        printf("Turns: %i\nCows:  %i\nBulls: %i\n\n", turn, cows_bulls.first, cows_bulls.second);
         filter(guess, cows_bulls, list);
     }
     printf("solved in %i turns\nThe secret was %s\n", turn, answer.c_str());
