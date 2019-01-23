@@ -4,4 +4,4 @@ Goal was to create a Cows and bulls game where in the player can select between 
 Player is the code cracker.
 CPU is the code cracker.
 CPU vs CPU.
-The algorithm for cracking the code is almost optimal. True optimal never takes more then 7 turns to solve a 4 digit number. Current algorithm sometimes take 8. Avg solve time is 5.4595 turns. 
+The algorithm for cracking the code is almost optimal. Avg solve time is 5.4595 turns. 
