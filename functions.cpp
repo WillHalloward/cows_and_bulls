@@ -34,7 +34,7 @@ string player_guess() {
     }
 }
 
-//calculates the score based on similarty by looping trough
+//calculates the score based on similarity by looping trough
 void calculate_score(const string &answer, string guess, pair<int, int> &cb){
     cb.first = cb.second = 0;
     for (int i = 0; i != NUM_LEN; i++){
@@ -42,16 +42,17 @@ void calculate_score(const string &answer, string guess, pair<int, int> &cb){
         //otherwise it checks if it's in the answer at all.
         if (answer.find(guess[i]) == i){
             cb.second++;
-        }
-        else if (answer.find(guess[i]) != string::npos){
+        } else if (answer.find(guess[i]) != string::npos) {
             cb.first++;
         }
     }
 }
 
-//grabs a random number from a vector list containing all possible gusses.
+//grabs a random number from a vector list containing all possible guesses.
 string cpu_guess(vector<string> &list){
-    if( list.empty() ) return "";
+    if (list.empty()) {
+        return "";
+    }
     return list[rand() % list.size()];
 }
 
@@ -69,12 +70,12 @@ void high_score(int turns, const string &number, string mode){
  * see scratch file for example */
 vector <string> generate_list(){
     vector<string> number_vector;
-    for (int x = static_cast<int>(pow(10, NUM_LEN - 2)); x < pow(10, NUM_LEN) - 1; x++)
+    for (auto x = static_cast<int>(pow(10, NUM_LEN - 2)); x < pow(10, NUM_LEN) - 1; x++)
     {
         //to make sure we include numbers that start with 0
         unsigned long long number_of_zeros = NUM_LEN - to_string(x).length();
         string temp = string(number_of_zeros, '0').append(to_string(x));
-        if(check_dupe(temp)) {
+        if (check_dupe(temp)) {
             number_vector.push_back(temp);
         }
     }
@@ -90,11 +91,9 @@ void filter(const string &guess, pair<int, int> cows_bulls, vector<string> &list
     pair<int, int> filter_cows_bulls;
     while(it != list.end()){
         calculate_score(*it, guess, filter_cows_bulls);
-        if (filter_cows_bulls != cows_bulls ||
-            *it == guess){
+        if (filter_cows_bulls != cows_bulls) {
             list.erase(it);
-        }
-        else{
+        } else {
             it++;
         }
     }
@@ -129,15 +128,15 @@ void cpu_player(){
         guess = cpu_guess(list);
         printf("My guess is %s\nHow many cows and bulls did i get?\nCows: ", guess.c_str());
         while (!(cin >> cows_bulls.first) || cows_bulls.first < 0 || cows_bulls.first > NUM_LEN){
-                printf("Please type in a number between 0 and %i\n", NUM_LEN);
-                cin.clear();
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            printf("Please type in a number between 0 and %i\n", NUM_LEN);
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
         printf("Bulls: ");
         while (!(cin >> cows_bulls.second) || cows_bulls.second < 0 || cows_bulls.second > NUM_LEN){
-                printf("Please type in a number between 0 and %i\n", NUM_LEN);
-                cin.clear();
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            printf("Please type in a number between 0 and %i\n", NUM_LEN);
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
         if (cows_bulls.second == NUM_LEN){
             break;
@@ -156,7 +155,7 @@ void cpu_player(){
 //the cpu plays vs it self.
 void cpu_cpu(){
     int loops;
-    double total;
+    double total = 0;
     printf("How many times?\n");
     while(!(cin >> loops) || loops <= 0) {
         std::cin.clear();
@@ -165,7 +164,6 @@ void cpu_cpu(){
     }
     for (int i = 0; loops > i; i++){
         pair <int, int> cows_bulls;
-
         int turn = 0;
         string answer = generate_digits();
         printf("========================================\n");
@@ -189,4 +187,5 @@ void cpu_cpu(){
     output.open("High_score.txt", ios_base::app);
     output << "Avg turns: " << total/loops << "\n" << loops << " loops" <<  "\n============\n";
     output.close();
+    printf("Done");
 }

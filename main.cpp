@@ -1,6 +1,9 @@
 #include "functions.h"
 
-//https://github.com/WillHalloward/cows_and_bulls
+/*
+ * https://github.com/WillHalloward/cows_and_bulls
+ */
+
 int main() {
     int mode = 0;
     printf("Do you you want to be the code cracker - Press 1\n"
