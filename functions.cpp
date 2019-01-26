@@ -7,7 +7,7 @@ const string NUMBERS = "1234567890";
 string generate_digits(){
     string answer = NUMBERS;
     shuffle(answer.begin(), answer.end(), default_random_engine(
-            static_cast<unsigned int>(chrono::system_clock::now().time_since_epoch().count())));
+        static_cast<unsigned int>(chrono::system_clock::now().time_since_epoch().count())));
     answer = answer.substr(0, NUM_LEN);
     return answer;
 }
@@ -49,10 +49,7 @@ void calculate_score(const string &answer, string guess, pair<int, int> &cb){
 }
 
 //grabs a random number from a vector list containing all possible guesses.
-string cpu_guess(vector<string> &list){
-    if (list.empty()) {
-        return "";
-    }
+inline string cpu_guess(vector<string> &list) {
     return list[rand() % list.size()];
 }
 
