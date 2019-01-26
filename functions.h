@@ -19,7 +19,6 @@ using namespace std;
 
 string generate_digits();
 string player_guess();
-string cpu_guess(vector<string> &list);
 vector <string> generate_list();
 bool check_dupe(string str);
 void calculate_score(const string &answer, string guess, pair<int, int> &cb);
