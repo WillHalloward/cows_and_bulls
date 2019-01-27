@@ -7,8 +7,8 @@
 int main() {
   int mode = 0;
   printf("Do you you want to be the code cracker - Press 1\n"
-         "Let the computer be the code cracker - Press 2\n"
-         "Or let the computer play vs itself? - Press 3\n");
+         "Let the computer be the code cracker   - Press 2\n"
+         "Or let the computer play vs itself?    - Press 3\n");
   while (mode < 1 || mode > 3) {
     cin >> mode;
     switch (mode) {

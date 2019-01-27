@@ -21,7 +21,6 @@ bool check_dupe(string str){
 //Makes sure that the input from the player is valid.
 string player_guess() {
   string guess;
-  //loop until we get a valid answer.
   while (true) {
     printf("Whats your guess?\n");
     cin >> guess;
@@ -33,7 +32,7 @@ string player_guess() {
 }
 
 //grabs a random number from a vector list containing all possible guesses.
-string cpu_guess(vector<string> &list) {
+inline string cpu_guess(vector<string> &list) {
   return list[rand() % list.size()];
 }
 
@@ -154,7 +153,7 @@ void cpu_cpu(){
   while (!(cin >> loops) || loops <= 0) {
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::cout << "Error, please try again.\n";
+    std::cout << "Error, please type in a number greater than 0.\n";
   }
   for (int i = 0; loops > i; i++) {
     pair<int, int> cows_bulls;
